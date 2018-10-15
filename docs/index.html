@@ -1,0 +1,512 @@
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>AV Studio Developer's Guide</title>
+
+    <style>
+      .highlight table td { padding: 5px; }
+.highlight table pre { margin: 0; }
+.highlight .gh {
+  color: #999999;
+}
+.highlight .sr {
+  color: #f6aa11;
+}
+.highlight .go {
+  color: #888888;
+}
+.highlight .gp {
+  color: #555555;
+}
+.highlight .gs {
+}
+.highlight .gu {
+  color: #aaaaaa;
+}
+.highlight .nb {
+  color: #f6aa11;
+}
+.highlight .cm {
+  color: #75715e;
+}
+.highlight .cp {
+  color: #75715e;
+}
+.highlight .c1 {
+  color: #75715e;
+}
+.highlight .cs {
+  color: #75715e;
+}
+.highlight .c, .highlight .cd {
+  color: #75715e;
+}
+.highlight .err {
+  color: #960050;
+}
+.highlight .gr {
+  color: #960050;
+}
+.highlight .gt {
+  color: #960050;
+}
+.highlight .gd {
+  color: #49483e;
+}
+.highlight .gi {
+  color: #49483e;
+}
+.highlight .ge {
+  color: #49483e;
+}
+.highlight .kc {
+  color: #66d9ef;
+}
+.highlight .kd {
+  color: #66d9ef;
+}
+.highlight .kr {
+  color: #66d9ef;
+}
+.highlight .no {
+  color: #66d9ef;
+}
+.highlight .kt {
+  color: #66d9ef;
+}
+.highlight .mf {
+  color: #ae81ff;
+}
+.highlight .mh {
+  color: #ae81ff;
+}
+.highlight .il {
+  color: #ae81ff;
+}
+.highlight .mi {
+  color: #ae81ff;
+}
+.highlight .mo {
+  color: #ae81ff;
+}
+.highlight .m, .highlight .mb, .highlight .mx {
+  color: #ae81ff;
+}
+.highlight .sc {
+  color: #ae81ff;
+}
+.highlight .se {
+  color: #ae81ff;
+}
+.highlight .ss {
+  color: #ae81ff;
+}
+.highlight .sd {
+  color: #e6db74;
+}
+.highlight .s2 {
+  color: #e6db74;
+}
+.highlight .sb {
+  color: #e6db74;
+}
+.highlight .sh {
+  color: #e6db74;
+}
+.highlight .si {
+  color: #e6db74;
+}
+.highlight .sx {
+  color: #e6db74;
+}
+.highlight .s1 {
+  color: #e6db74;
+}
+.highlight .s {
+  color: #e6db74;
+}
+.highlight .na {
+  color: #a6e22e;
+}
+.highlight .nc {
+  color: #a6e22e;
+}
+.highlight .nd {
+  color: #a6e22e;
+}
+.highlight .ne {
+  color: #a6e22e;
+}
+.highlight .nf {
+  color: #a6e22e;
+}
+.highlight .vc {
+  color: #ffffff;
+}
+.highlight .nn {
+  color: #ffffff;
+}
+.highlight .nl {
+  color: #ffffff;
+}
+.highlight .ni {
+  color: #ffffff;
+}
+.highlight .bp {
+  color: #ffffff;
+}
+.highlight .vg {
+  color: #ffffff;
+}
+.highlight .vi {
+  color: #ffffff;
+}
+.highlight .nv {
+  color: #ffffff;
+}
+.highlight .w {
+  color: #ffffff;
+}
+.highlight {
+  color: #ffffff;
+}
+.highlight .n, .highlight .py, .highlight .nx {
+  color: #ffffff;
+}
+.highlight .ow {
+  color: #f92672;
+}
+.highlight .nt {
+  color: #f92672;
+}
+.highlight .k, .highlight .kv {
+  color: #f92672;
+}
+.highlight .kn {
+  color: #f92672;
+}
+.highlight .kp {
+  color: #f92672;
+}
+.highlight .o {
+  color: #f92672;
+}
+    </style>
+    <link href="stylesheets/screen.css" rel="stylesheet" media="screen" />
+    <link href="stylesheets/print.css" rel="stylesheet" media="print" />
+      <script src="javascripts/all.js"></script>
+  </head>
+
+  <body class="index" data-languages="[&quot;shell&quot;,&quot;python&quot;]">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="images/navbar.png" alt="Navbar" />
+      </span>
+    </a>
+    <div class="toc-wrapper">
+      <img src="images/logo.png" class="logo" alt="Logo" />
+        <div class="lang-selector">
+              <a href="#" data-language-name="shell">cURL</a>
+              <a href="#" data-language-name="python">python</a>
+        </div>
+        <div class="search">
+          <input type="text" class="search" id="input-search" placeholder="Search">
+        </div>
+        <ul class="search-results"></ul>
+      <ul id="toc" class="toc-list-h1">
+          <li>
+            <a href="#introduction" class="toc-h1 toc-link" data-title="Introduction">Introduction</a>
+          </li>
+          <li>
+            <a href="#big-picture" class="toc-h1 toc-link" data-title="Big picture">Big picture</a>
+          </li>
+          <li>
+            <a href="#authentication" class="toc-h1 toc-link" data-title="Authentication">Authentication</a>
+          </li>
+          <li>
+            <a href="#getting-all-devices" class="toc-h1 toc-link" data-title="Getting All Devices">Getting All Devices</a>
+          </li>
+          <li>
+            <a href="#getting-a-specific-device" class="toc-h1 toc-link" data-title="Getting a Specific Device">Getting a Specific Device</a>
+          </li>
+          <li>
+            <a href="#pairing-a-real-device" class="toc-h1 toc-link" data-title="Pairing a Real Device">Pairing a Real Device</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#switching-the-device-to-av-studio-mode" class="toc-h2 toc-link" data-title="Switching the Device to AV Studio mode">Switching the Device to AV Studio mode</a>
+                  </li>
+                  <li>
+                    <a href="#pairing-the-device" class="toc-h2 toc-link" data-title="Pairing the Device">Pairing the Device</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#device-commands" class="toc-h1 toc-link" data-title="Device Commands">Device Commands</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#sending-commands-to-devices" class="toc-h2 toc-link" data-title="Sending Commands to Devices">Sending Commands to Devices</a>
+                  </li>
+                  <li>
+                    <a href="#setparam" class="toc-h2 toc-link" data-title="setparam:">setparam:</a>
+                  </li>
+                  <li>
+                    <a href="#rtmp-start-url" class="toc-h2 toc-link" data-title="rtmp.start:url">rtmp.start:url</a>
+                  </li>
+                  <li>
+                    <a href="#rtmp-stop" class="toc-h2 toc-link" data-title="rtmp.stop">rtmp.stop</a>
+                  </li>
+                  <li>
+                    <a href="#firmware-update" class="toc-h2 toc-link" data-title="firmware.update">firmware.update</a>
+                  </li>
+                  <li>
+                    <a href="#unpair" class="toc-h2 toc-link" data-title="unpair">unpair</a>
+                  </li>
+              </ul>
+          </li>
+      </ul>
+        <ul class="toc-footer">
+            <li><a href='https://go.avstudio.com'>avstudio.com</a></li>
+        </ul>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id='introduction'>Introduction</h1>
+<p>Welcome to the AV Studio API! You can use our API to pair, control and monitor Epiphan devices.</p>
+
+<p>We have language bindings in Shell and Python. You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
+<h1 id='big-picture'>Big picture</h1>
+<p>Each device (and Pearl if AV Studio is not disabled) keeps long poll connection to AV Studio and waits for commands. Initially, all devices are <em>unpaired</em>, which means that they are not assiciated with any AV Studio account. To pair a device, one should login into their account and send pairing command to AV Studio with pairing code. AV Studio finds device that has this code and connects it to the AV Studio account.</p>
+<h1 id='authentication'>Authentication</h1><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">avstudio.avstudio</span> <span class="kn">import</span> <span class="n">AVStudioAPI</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">AVStudioAPI</span><span class="p">(</span><span class="s">"go.avstudio.com"</span><span class="p">)</span>
+<span class="n">api</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
+</code></pre><pre class="highlight shell tab-shell"><code>curl -v https://go.avstudio.com/front/api/v1t/oauth/base/USERNAME?pwd<span class="o">=</span>PASSWORD
+</code></pre>
+<p>To login into your AV Studio account, use this code:</p>
+<pre class="highlight plaintext"><code>&gt; GET /front/api/v1t/oauth/base/USERNAME?pwd=PASSWORD HTTP/2
+&gt; Host: go.avstudio.com
+&gt; User-Agent: curl/7.54.0
+&gt; Accept: */*
+&gt;
+&lt; HTTP/2 302
+&lt; server: nginx/1.11.3
+&lt; date: Fri, 12 Oct 2018 17:43:42 GMT
+&lt; content-type: text/html; charset=utf-8
+&lt; content-length: 91
+&lt; location: https://go.avstudio.com/TEAMID#/scenes
+&lt; set-cookie: KSESSIONID=KSESSIONID; Path=/; Expires=Sat, 12 Oct 2019 17:43:42 GMT; Max-Age=31536000
+&lt; x-current-team-id: TEAMID
+&lt; strict-transport-security: max-age=15724800; preload
+</code></pre>
+<p>The successful response will have team and session identifiers, which will be used in further requests (Python avstudio module does it automatically).</p>
+<h1 id='getting-all-devices'>Getting All Devices</h1>
+<p>There&#39;s two devices in a newly created AV Studio account, let&#39;s retrieve them:</p>
+<pre class="highlight python tab-python"><code><span class="n">devices</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">d</span><span class="p">[</span><span class="s">"Id"</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s">"Name"</span><span class="p">]</span>
+
+<span class="c"># Output:</span>
+<span class="c"># demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277 My First Demo Device</span>
+<span class="c"># demo_1_4e0a964a-b350-435f-82c9-de6ab5188af2 My Second Demo Device</span>
+</code></pre><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices <span class="se">\</span>
+  -H <span class="s2">"Cookie: KSESSIONID=KSESSIONID"</span>
+</code></pre>
+<blockquote>
+<p>The above command returns JSON with device infos:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"Id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My First Demo Device"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"Model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Demo"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"Status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Online"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"Recording"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"StateTime"</span><span class="p">:</span><span class="w"> </span><span class="mf">1539366714.931</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"SnapshotURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/front/api/v1/devices/demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277/state.jpg"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"IsUnpaired"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"Telemetry"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+<p><code>GET /front/api/v1t/team/TEAMID/devices</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>TEAMID</td>
+<td>Team ID from auth response</td>
+</tr>
+</tbody></table>
+<h1 id='getting-a-specific-device'>Getting a Specific Device</h1><pre class="highlight python tab-python"><code><span class="n">device</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">"demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277"</span><span class="p">)</span>
+</code></pre><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v1t/team/6ef82053-5bb5-4ba6-9e43-e8565a827b9c/devices/demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277 <span class="se">\</span>
+  -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span>
+</code></pre>
+<blockquote>
+<p>Result:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"Id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My First Demo Device"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"Model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Demo"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"Status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Online"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"Recording"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"StateTime"</span><span class="p">:</span><span class="w"> </span><span class="mf">1539366714.931</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"SnapshotURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/front/api/v1/devices/demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277/state.jpg"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"IsUnpaired"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"Telemetry"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+<p><code>GET /front/api/v1t/team/TEAMID/devices/DEVICEID</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>TEAMID</td>
+<td>Team ID from the auth response</td>
+</tr>
+<tr>
+<td>DEVICEID</td>
+<td>The ID of the device to retrieve</td>
+</tr>
+</tbody></table>
+<h1 id='pairing-a-real-device'>Pairing a Real Device</h1>
+<p>Let&#39;s pair a real device.</p>
+<h3 id='switching-the-device-to-av-studio-mode'>Switching the Device to AV Studio mode</h3>
+<p>Switch the device to AV Studio mode by either double pressing the power button on the device until that little screen shows Epiphan logo:</p>
+
+<p><img src="images/front_screen_pairing_code.jpg" title="pairing code on a front screen" alt="AV Studio pairing code on a front screen" /></p>
+
+<p>...or by selecting AV Studio on a monitor, connected to Webcaster&#39;s HDMI output:</p>
+
+<p><img src="images/switch_to_avstudio.gif" title="AV Studio in HDMI output" alt="AV Studio in HDMI output" /></p>
+<h3 id='pairing-the-device'>Pairing the Device</h3>
+<p>To pair a device we use the following endpoint:</p>
+
+<p><code>POST /front/api/v1t/team/TEAMID/devices</code></p>
+<pre class="highlight python tab-python"><code><span class="n">r</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">"5cf06c29"</span><span class="p">,</span> <span class="s">"NEW DEVICE"</span><span class="p">)</span>
+<span class="n">device_id</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s">"ID"</span><span class="p">]</span>
+</code></pre><pre class="highlight shell tab-shell"><code>curl -X POST https://go.avstudio.com/front/api/v1t/team/TEAMID/devices <span class="se">\</span>
+  -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
+  -d <span class="s1">'{"DeviceID": "5cf06c29", "Name": "NEW DEVICE"}'</span>
+</code></pre>
+<blockquote>
+<p>Result:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+    </span><span class="s2">"Status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"StatusCode"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"ID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DEVICEID"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h1 id='device-commands'>Device Commands</h1><h2 id='sending-commands-to-devices'>Sending Commands to Devices</h2>
+<blockquote>
+<p>e.g. setting bitrate to 1 Mbit/s:</p>
+</blockquote>
+<pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"setparam:bitrate=1000"</span><span class="p">)</span>
+</code></pre><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task <span class="se">\</span>
+ -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
+ --data-binary <span class="s1">'{"cmd": "setparam:bitrate=2000"}'</span>
+</code></pre>
+<p>Commands are sent to devices by posting <code>{&quot;cmd&quot;: COMMAND}</code> json to this endpoint:</p>
+
+<p><code>POST front/api/v1t/team/TEAMID/devices/DEVICEID/task</code></p>
+<h2 id='setparam'>setparam:</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">deviceId</span><span class="p">)[</span><span class="s">"Telemetry"</span><span class="p">][</span><span class="s">"settings"</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+<span class="c"># Output: ['resolution', 'bitrate']</span>
+</code></pre><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID <span class="se">\</span>
+-H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
+| jq <span class="s1">'.Telemetry.settings | keys'</span>
+
+<span class="c"># Output:</span>
+<span class="c"># [</span>
+<span class="c">#   "bitrate",</span>
+<span class="c">#   "resolution"</span>
+<span class="c"># ]</span>
+</code></pre>
+<p>Set value of device settings parameter. Available parameters are listed in device info Telemetry/settings dictionary.</p>
+
+<p>Epiphan Webcasters support the following parameters:</p>
+
+<table><thead>
+<tr>
+<th>Param</th>
+<th>Possible values</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>resolution</td>
+<td>1920x1080, 1280x720, 640x360, 320x180</td>
+<td>Stream frame size</td>
+</tr>
+<tr>
+<td>bitrate</td>
+<td>up to 4000</td>
+<td>Stream bitrate, in Kbit/s</td>
+</tr>
+</tbody></table>
+<h2 id='rtmp-start-url'>rtmp.start:url</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"rtmp.start:rtmp://10.1.2.16/live/test"</span><span class="p">)</span>
+</code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task <span class="se">\</span>
+ -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
+ --data-binary <span class="s1">'{"cmd": "rtmp.start:rtmp://10.1.2.16/live/test"}'</span>
+</code></pre>
+<blockquote>
+<p>The status of RTMP stream is reported in <code>Telemetry/state/rtmp</code>.</p>
+
+<p><code>speed</code> is actual_uploading_speed/bitrate ratio, values greater or equal to 1.0 are ok, less than 1.0 means there&#39;s no enough bandwidth.</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="s2">"rtmp"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"rtmp://10.1.2.16/live/test"</span><span class="p">,</span><span class="w"> 
+    </span><span class="s2">"speed"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.00</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"bitrate"</span><span class="p">:</span><span class="w"> </span><span class="mi">2061</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"sent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"frames"</span><span class="p">:</span><span class="w"> </span><span class="mi">896</span><span class="p">,</span><span class="w"> 
+        </span><span class="s2">"bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">7723008</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<p>Starts RTMP stream to a given RTMP url.</p>
+<h2 id='rtmp-stop'>rtmp.stop</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"rtmp.stop"</span><span class="p">)</span>
+</code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task <span class="se">\</span>
+ -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
+ --data-binary <span class="s1">'{"cmd": "rtmp.stop"}'</span>
+</code></pre>
+<p>Stops RTMP stream, started by <code>rtmp.start</code></p>
+<h2 id='firmware-update'>firmware.update</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"firmware.update"</span><span class="p">)</span>
+</code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task <span class="se">\</span>
+ -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
+ --data-binary <span class="s1">'{"cmd": "firmware.update"}'</span>
+</code></pre>
+<p>Starts firmware update if more recent firmware is available.</p>
+<h2 id='unpair'>unpair</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"unpair"</span><span class="p">)</span>
+</code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task <span class="se">\</span>
+ -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
+ --data-binary <span class="s1">'{"cmd": "unpair"}'</span>
+</code></pre>
+<p>Unpairs device from the account it&#39;s pared to.</p>
+
+      </div>
+      <div class="dark-box">
+          <div class="lang-selector">
+                <a href="#" data-language-name="shell">cURL</a>
+                <a href="#" data-language-name="python">python</a>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>
