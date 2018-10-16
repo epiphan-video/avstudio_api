@@ -20,8 +20,8 @@ $ pip install -r
 Jupyter has to be installed.
 
 ```
-cd avstudio_api
-python -m notebook
+$ cd avstudio_api
+$ python -m notebook
 ```
 
 ## Documentation
