@@ -21,11 +21,11 @@ search: true
 
 Welcome to the AV Studio API! You can use our API to pair, control and monitor Epiphan devices.
 
-We have language bindings in Shell and Python. You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+We have language bindings in bash and Python. You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
 # Big picture
 
-Each device (and Pearl if AV Studio is not disabled) keeps long poll connection to AV Studio and waits for commands. Initially, all devices are *unpaired*, which means that they are not assiciated with any AV Studio account. To pair a device, one should login into their account and send pairing command to AV Studio with pairing code. AV Studio finds device that has this code and connects it to the AV Studio account.
+Each encoder device has a long poll connection to AV Studio and waits for commands. Initially, all devices are *unpaired*, which means that they are not assiciated with any AV Studio account. To pair a device, log in to your AV Studio account and send a pairing command to AV Studio using the pairing code. AV Studio finds the device that has this code and connects your account to it.
 
 # Authentication
 
@@ -40,7 +40,7 @@ api.login(USERNAME, PASSWORD)
 curl -v https://go.avstudio.com/front/api/v1t/oauth/base/USERNAME?pwd=PASSWORD
 ```
 
-To login into your AV Studio account, use this code:
+To login to your AV Studio account, use this code:
 
 ```
 > GET /front/api/v1t/oauth/base/USERNAME?pwd=PASSWORD HTTP/2
@@ -59,11 +59,11 @@ To login into your AV Studio account, use this code:
 < strict-transport-security: max-age=15724800; preload
 ```
 
-The successful response will have team and session identifiers, which will be used in further requests (Python avstudio module does it automatically).
+The successful response has team and session identifiers, which are used in subsequent requests in this session.
 
 # Getting All Devices
 
-There's two devices in a newly created AV Studio account, let's retrieve them:
+There're two devices in a newly created AV Studio account, let's retrieve them:
 
 ```python
 devices = api.Devices.get_all()
@@ -80,7 +80,7 @@ curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices \
   -H "Cookie: KSESSIONID=KSESSIONID"
 ```
 
-> The above command returns JSON with device infos:
+> The above command returns array with the device info dictionaries:
 
 ```json
 [
@@ -144,15 +144,17 @@ DEVICEID | The ID of the device to retrieve
 
 Let's pair a real device.
 
-### Switching the Device to AV Studio mode
+### Switching the Webcaster X2 Device to AV Studio Mode
 
-Switch the device to AV Studio mode by either double pressing the power button on the device until that little screen shows Epiphan logo:
+There are two ways to switch modes:
 
-![AV Studio pairing code on a front screen](images/front_screen_pairing_code.jpg "pairing code on a front screen")
+Double press the power button on the device until the LCD screen shows Epiphan logo:
 
-...or by selecting AV Studio on a monitor, connected to Webcaster's HDMI output:
+![Swtiching to AV Studio using LCD screen](images/front_screen_pairing_code.jpg "Swtiching to AV Studio using LCD screen")
 
-![AV Studio in HDMI output](images/switch_to_avstudio.gif "AV Studio in HDMI output")
+Or select AV Studio using a monitor and attached USB mouse:
+
+![Swtiching to AV Studio using a monitor and a mouse](images/switch_to_avstudio.gif "Swtiching to AV Studio using a monitor and a mouse")
 
 ### Pairing the Device
 
@@ -195,10 +197,10 @@ api.Devices.run_command(deviceId, "setparam:bitrate=1000")
 ```shell
 curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task \
  -H "Cookie: KSESSIONID=SESSIONID" \
- --data-binary '{"cmd": "setparam:bitrate=2000"}'
+ --data-binary '{"cmd": "setparam:bitrate=1000"}'
 ```
 
-Commands are sent to devices by posting `{"cmd": COMMAND}` json to this endpoint:
+To send commands to devices, POST `{"cmd": COMMAND}` json to this endpoint:
 
 `POST front/api/v1t/team/TEAMID/devices/DEVICEID/task`
 
@@ -222,9 +224,9 @@ curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID \
 # ]
 ```
 
-Set value of device settings parameter. Available parameters are listed in device info Telemetry/settings dictionary.
+This command sets the value of the device settings parameter. Available parameters are listed in the device info Telemetry/settings dictionary.
 
-Epiphan Webcasters support the following parameters:
+Epiphan Webcaster X2's support the following parameters:
 
 Param|Possible values|Description
 -----|---------------|-----------
@@ -243,9 +245,9 @@ api.Devices.run_command(deviceId, "rtmp.start:rtmp://10.1.2.16/live/test")
  --data-binary '{"cmd": "rtmp.start:rtmp://10.1.2.16/live/test"}'
 ```
 
-> The status of RTMP stream is reported in `Telemetry/state/rtmp`.
+> The status of the RTMP stream is reported in `Telemetry/state/rtmp`.
 > 
-> `speed` is actual_uploading_speed/bitrate ratio, values greater or equal to 1.0 are ok, less than 1.0 means there's no enough bandwidth.
+> `speed` is actual_uploading_speed/bitrate ratio, values greater or equal to 1.0 are ok, less than 1.0 means there's not enough bandwidth.
 
 ```json
 "rtmp": {
@@ -259,7 +261,7 @@ api.Devices.run_command(deviceId, "rtmp.start:rtmp://10.1.2.16/live/test")
 }
 ```
 
-Starts RTMP stream to a given RTMP url.
+This command starts an RTMP stream to a given RTMP url.
 
 ## rtmp.stop
 
@@ -273,7 +275,7 @@ api.Devices.run_command(deviceId, "rtmp.stop")
  --data-binary '{"cmd": "rtmp.stop"}'
 ```
 
-Stops RTMP stream, started by `rtmp.start`
+To stop the RTMP stream that was started by `rtmp.start`
 
 ## firmware.update
 
@@ -287,7 +289,7 @@ api.Devices.run_command(deviceId, "firmware.update")
  --data-binary '{"cmd": "firmware.update"}'
 ```
 
-Starts firmware update if more recent firmware is available.
+Starts a firmware update if a more recent firmware version is available.
 
 ## unpair
 
@@ -301,4 +303,4 @@ api.Devices.run_command(deviceId, "unpair")
  --data-binary '{"cmd": "unpair"}'
 ```
 
-Unpairs device from the account it's pared to.
+Unpairs the device from the account that it's paired to.

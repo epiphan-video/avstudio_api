@@ -238,7 +238,7 @@
             <a href="#pairing-a-real-device" class="toc-h1 toc-link" data-title="Pairing a Real Device">Pairing a Real Device</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#switching-the-device-to-av-studio-mode" class="toc-h2 toc-link" data-title="Switching the Device to AV Studio mode">Switching the Device to AV Studio mode</a>
+                    <a href="#switching-the-webcaster-x2-device-to-av-studio-mode" class="toc-h2 toc-link" data-title="Switching the Webcaster X2 Device to AV Studio Mode">Switching the Webcaster X2 Device to AV Studio Mode</a>
                   </li>
                   <li>
                     <a href="#pairing-the-device" class="toc-h2 toc-link" data-title="Pairing the Device">Pairing the Device</a>
@@ -279,16 +279,16 @@
         <h1 id='introduction'>Introduction</h1>
 <p>Welcome to the AV Studio API! You can use our API to pair, control and monitor Epiphan devices.</p>
 
-<p>We have language bindings in Shell and Python. You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
+<p>We have language bindings in bash and Python. You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
 <h1 id='big-picture'>Big picture</h1>
-<p>Each device (and Pearl if AV Studio is not disabled) keeps long poll connection to AV Studio and waits for commands. Initially, all devices are <em>unpaired</em>, which means that they are not assiciated with any AV Studio account. To pair a device, one should login into their account and send pairing command to AV Studio with pairing code. AV Studio finds device that has this code and connects it to the AV Studio account.</p>
+<p>Each encoder device has a long poll connection to AV Studio and waits for commands. Initially, all devices are <em>unpaired</em>, which means that they are not assiciated with any AV Studio account. To pair a device, log in to your AV Studio account and send a pairing command to AV Studio using the pairing code. AV Studio finds the device that has this code and connects your account to it.</p>
 <h1 id='authentication'>Authentication</h1><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">avstudio.avstudio</span> <span class="kn">import</span> <span class="n">AVStudioAPI</span>
 
 <span class="n">api</span> <span class="o">=</span> <span class="n">AVStudioAPI</span><span class="p">(</span><span class="s">"go.avstudio.com"</span><span class="p">)</span>
 <span class="n">api</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
 </code></pre><pre class="highlight shell tab-shell"><code>curl -v https://go.avstudio.com/front/api/v1t/oauth/base/USERNAME?pwd<span class="o">=</span>PASSWORD
 </code></pre>
-<p>To login into your AV Studio account, use this code:</p>
+<p>To login to your AV Studio account, use this code:</p>
 <pre class="highlight plaintext"><code>&gt; GET /front/api/v1t/oauth/base/USERNAME?pwd=PASSWORD HTTP/2
 &gt; Host: go.avstudio.com
 &gt; User-Agent: curl/7.54.0
@@ -304,9 +304,9 @@
 &lt; x-current-team-id: TEAMID
 &lt; strict-transport-security: max-age=15724800; preload
 </code></pre>
-<p>The successful response will have team and session identifiers, which will be used in further requests (Python avstudio module does it automatically).</p>
+<p>The successful response has team and session identifiers, which are used in subsequent requests in this session.</p>
 <h1 id='getting-all-devices'>Getting All Devices</h1>
-<p>There&#39;s two devices in a newly created AV Studio account, let&#39;s retrieve them:</p>
+<p>There&#39;re two devices in a newly created AV Studio account, let&#39;s retrieve them:</p>
 <pre class="highlight python tab-python"><code><span class="n">devices</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">:</span>
     <span class="k">print</span> <span class="n">d</span><span class="p">[</span><span class="s">"Id"</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s">"Name"</span><span class="p">]</span>
@@ -318,7 +318,7 @@
   -H <span class="s2">"Cookie: KSESSIONID=KSESSIONID"</span>
 </code></pre>
 <blockquote>
-<p>The above command returns JSON with device infos:</p>
+<p>The above command returns array with the device info dictionaries:</p>
 </blockquote>
 <pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
   </span><span class="p">{</span><span class="w">
@@ -387,14 +387,16 @@
 </tbody></table>
 <h1 id='pairing-a-real-device'>Pairing a Real Device</h1>
 <p>Let&#39;s pair a real device.</p>
-<h3 id='switching-the-device-to-av-studio-mode'>Switching the Device to AV Studio mode</h3>
-<p>Switch the device to AV Studio mode by either double pressing the power button on the device until that little screen shows Epiphan logo:</p>
+<h3 id='switching-the-webcaster-x2-device-to-av-studio-mode'>Switching the Webcaster X2 Device to AV Studio Mode</h3>
+<p>There are two ways to switch modes:</p>
 
-<p><img src="images/front_screen_pairing_code.jpg" title="pairing code on a front screen" alt="AV Studio pairing code on a front screen" /></p>
+<p>Double press the power button on the device until the LCD screen shows Epiphan logo:</p>
 
-<p>...or by selecting AV Studio on a monitor, connected to Webcaster&#39;s HDMI output:</p>
+<p><img src="images/front_screen_pairing_code.jpg" title="Swtiching to AV Studio using LCD screen" alt="Swtiching to AV Studio using LCD screen" /></p>
 
-<p><img src="images/switch_to_avstudio.gif" title="AV Studio in HDMI output" alt="AV Studio in HDMI output" /></p>
+<p>Or select AV Studio using a monitor and attached USB mouse:</p>
+
+<p><img src="images/switch_to_avstudio.gif" title="Swtiching to AV Studio using a monitor and a mouse" alt="Swtiching to AV Studio using a monitor and a mouse" /></p>
 <h3 id='pairing-the-device'>Pairing the Device</h3>
 <p>To pair a device we use the following endpoint:</p>
 
@@ -420,9 +422,9 @@
 <pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"setparam:bitrate=1000"</span><span class="p">)</span>
 </code></pre><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task <span class="se">\</span>
  -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
- --data-binary <span class="s1">'{"cmd": "setparam:bitrate=2000"}'</span>
+ --data-binary <span class="s1">'{"cmd": "setparam:bitrate=1000"}'</span>
 </code></pre>
-<p>Commands are sent to devices by posting <code>{&quot;cmd&quot;: COMMAND}</code> json to this endpoint:</p>
+<p>To send commands to devices, POST <code>{&quot;cmd&quot;: COMMAND}</code> json to this endpoint:</p>
 
 <p><code>POST front/api/v1t/team/TEAMID/devices/DEVICEID/task</code></p>
 <h2 id='setparam'>setparam:</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">deviceId</span><span class="p">)[</span><span class="s">"Telemetry"</span><span class="p">][</span><span class="s">"settings"</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
@@ -438,9 +440,9 @@
 <span class="c">#   "resolution"</span>
 <span class="c"># ]</span>
 </code></pre>
-<p>Set value of device settings parameter. Available parameters are listed in device info Telemetry/settings dictionary.</p>
+<p>This command sets the value of the device settings parameter. Available parameters are listed in the device info Telemetry/settings dictionary.</p>
 
-<p>Epiphan Webcasters support the following parameters:</p>
+<p>Epiphan Webcaster X2&#39;s support the following parameters:</p>
 
 <table><thead>
 <tr>
@@ -466,9 +468,9 @@
  --data-binary <span class="s1">'{"cmd": "rtmp.start:rtmp://10.1.2.16/live/test"}'</span>
 </code></pre>
 <blockquote>
-<p>The status of RTMP stream is reported in <code>Telemetry/state/rtmp</code>.</p>
+<p>The status of the RTMP stream is reported in <code>Telemetry/state/rtmp</code>.</p>
 
-<p><code>speed</code> is actual_uploading_speed/bitrate ratio, values greater or equal to 1.0 are ok, less than 1.0 means there&#39;s no enough bandwidth.</p>
+<p><code>speed</code> is actual_uploading_speed/bitrate ratio, values greater or equal to 1.0 are ok, less than 1.0 means there&#39;s not enough bandwidth.</p>
 </blockquote>
 <pre class="highlight json tab-json"><code><span class="s2">"rtmp"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="s2">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"rtmp://10.1.2.16/live/test"</span><span class="p">,</span><span class="w"> 
@@ -480,25 +482,25 @@
     </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
-<p>Starts RTMP stream to a given RTMP url.</p>
+<p>This command starts an RTMP stream to a given RTMP url.</p>
 <h2 id='rtmp-stop'>rtmp.stop</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"rtmp.stop"</span><span class="p">)</span>
 </code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task <span class="se">\</span>
  -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
  --data-binary <span class="s1">'{"cmd": "rtmp.stop"}'</span>
 </code></pre>
-<p>Stops RTMP stream, started by <code>rtmp.start</code></p>
+<p>To stop the RTMP stream that was started by <code>rtmp.start</code></p>
 <h2 id='firmware-update'>firmware.update</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"firmware.update"</span><span class="p">)</span>
 </code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task <span class="se">\</span>
  -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
  --data-binary <span class="s1">'{"cmd": "firmware.update"}'</span>
 </code></pre>
-<p>Starts firmware update if more recent firmware is available.</p>
+<p>Starts a firmware update if a more recent firmware version is available.</p>
 <h2 id='unpair'>unpair</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"unpair"</span><span class="p">)</span>
 </code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task <span class="se">\</span>
  -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
  --data-binary <span class="s1">'{"cmd": "unpair"}'</span>
 </code></pre>
-<p>Unpairs device from the account it&#39;s pared to.</p>
+<p>Unpairs the device from the account that it&#39;s paired to.</p>
 
       </div>
       <div class="dark-box">
