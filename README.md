@@ -12,7 +12,7 @@ This repo contains:
 ```
 $ git clone https://github.com/epiphan-video/avstudio_api.git
 $ cd avstudio_api
-$ pip install -r
+$ pip install -r requirements.txt
 ```
 
 ## Running the interactive tutorial
