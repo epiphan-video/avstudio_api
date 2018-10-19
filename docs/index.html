@@ -282,7 +282,7 @@
 <p>We have language bindings in bash and Python. You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
 <h1 id='big-picture'>Big picture</h1>
 <p>Each encoder device has a long poll connection to AV Studio and waits for commands. Initially, all devices are <em>unpaired</em>, which means that they are not assiciated with any AV Studio account. To pair a device, log in to your AV Studio account and send a pairing command to AV Studio using the pairing code. AV Studio finds the device that has this code and connects your account to it.</p>
-<h1 id='authentication'>Authentication</h1><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">avstudio.avstudio</span> <span class="kn">import</span> <span class="n">AVStudioAPI</span>
+<h1 id='authentication'>Authentication</h1><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">avstudio</span> <span class="kn">import</span> <span class="n">AVStudioAPI</span>
 
 <span class="n">api</span> <span class="o">=</span> <span class="n">AVStudioAPI</span><span class="p">(</span><span class="s">"go.avstudio.com"</span><span class="p">)</span>
 <span class="n">api</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>

@@ -30,7 +30,7 @@ Each encoder device has a long poll connection to AV Studio and waits for comman
 # Authentication
 
 ```python
-from avstudio.avstudio import AVStudioAPI
+from avstudio import AVStudioAPI
 
 api = AVStudioAPI("go.avstudio.com")
 api.login(USERNAME, PASSWORD)

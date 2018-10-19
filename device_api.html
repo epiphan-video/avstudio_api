@@ -11776,11 +11776,11 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">sleep</span>
-<span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="k">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">HTML</span><span class="p">,</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+<span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">HTML</span><span class="p">,</span> <span class="n">Image</span>
 
 <span class="c1"># Little helpers</span>
 
@@ -11821,17 +11821,18 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Getting-credentials-and-codes">Getting credentials and codes<a class="anchor-link" href="#Getting-credentials-and-codes">&#182;</a></h4><p>When the notebook is exported, these values are taken from config.json</p>
+<h1 id="Getting-credentials-and-codes">Getting credentials and codes<a class="anchor-link" href="#Getting-credentials-and-codes">&#182;</a></h1><p>These values are taken from config.json, if it exists.</p>
 
 <pre><code>$ cat config.json
 {
-  "AVS_USERNAME": "test_username",
-  "AVS_PASSWORD": "test_password",
-  "AVS_PAIRING_CODE": "9999-1111"
+    "avs_username": "test_username",
+    "avs_password": "test_password",
+    "pairing_code": "9999-1111",
+    "rtmp_url": "rtmp://youtube.com/live/test"
 }
 
 $ jupyter nbconvert --to html --execute device_api.ipynb --ExecutePreprocessor.timeout=-1</code></pre>
-<p>Otherwise, if the notebook is used in interactive mode, set up those values right in the code below.</p>
+<p>Alternatively, you can hardcode those values in the code below.</p>
 
 </div>
 </div>
@@ -11841,18 +11842,20 @@ $ jupyter nbconvert --to html --execute device_api.ipynb --ExecutePreprocessor.t
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">configFilename</span> <span class="o">=</span> <span class="s2">&quot;config.json&quot;</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">kAVSUsername</span> <span class="o">=</span> <span class="s2">&quot;test_username&quot;</span>
+<span class="n">kAVSPassword</span> <span class="o">=</span> <span class="s2">&quot;test_password&quot;</span>
+<span class="n">kPairingCode</span> <span class="o">=</span> <span class="s2">&quot;9999-1111&quot;</span>
+<span class="n">kRTMPUrl</span> <span class="o">=</span> <span class="s2">&quot;rtmp://youtube.com/live/test&quot;</span>
+
+<span class="n">configFilename</span> <span class="o">=</span> <span class="s2">&quot;config.json&quot;</span>
 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">configFilename</span><span class="p">):</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">configFilename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">cfg</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
-        <span class="n">kAVSUsername</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;AVS_USERNAME&quot;</span><span class="p">]</span>
-        <span class="n">kAVSPassword</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;AVS_PASSWORD&quot;</span><span class="p">]</span>
-        <span class="n">kPairingCode</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;AVS_PAIRING_CODE&quot;</span><span class="p">]</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="n">kAVSUsername</span> <span class="o">=</span> <span class="s2">&quot;test_username&quot;</span>
-    <span class="n">kAVSPassword</span> <span class="o">=</span> <span class="s2">&quot;test_password&quot;</span>
-    <span class="n">kPairingCode</span> <span class="o">=</span> <span class="s2">&quot;9999-1111&quot;</span>
+        <span class="n">kAVSUsername</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;avs_username&quot;</span><span class="p">]</span>
+        <span class="n">kAVSPassword</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;avs_password&quot;</span><span class="p">]</span>
+        <span class="n">kPairingCode</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;pairing_code&quot;</span><span class="p">]</span>
+        <span class="n">kRTMPUrl</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;rtmp_url&quot;</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -11864,7 +11867,7 @@ $ jupyter nbconvert --to html --execute device_api.ipynb --ExecutePreprocessor.t
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Importing-AV-Studio-API">Importing AV Studio API<a class="anchor-link" href="#Importing-AV-Studio-API">&#182;</a></h4>
+<h1 id="Importing-AV-Studio-API">Importing AV Studio API<a class="anchor-link" href="#Importing-AV-Studio-API">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -11873,7 +11876,7 @@ $ jupyter nbconvert --to html --execute device_api.ipynb --ExecutePreprocessor.t
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">avstudio.avstudio</span> <span class="k">import</span> <span class="n">AVStudioAPI</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">avstudio</span> <span class="kn">import</span> <span class="n">AVStudioAPI</span>
 </pre></div>
 
 </div>
@@ -11894,7 +11897,7 @@ $ jupyter nbconvert --to html --execute device_api.ipynb --ExecutePreprocessor.t
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">api</span> <span class="o">=</span> <span class="n">AVStudioAPI</span><span class="p">(</span><span class="s2">&quot;go.avstudio.com&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">api</span> <span class="o">=</span> <span class="n">AVStudioAPI</span><span class="p">(</span><span class="s2">&quot;go.avstudio.com&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11907,10 +11910,9 @@ $ jupyter nbconvert --to html --execute device_api.ipynb --ExecutePreprocessor.t
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;avstudio&quot;</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">()</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;avstudio&quot;</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">()</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span> <span class="c1"># use logging.DEBUG to see raw HTTP</span>
 </pre></div>
 
 </div>
@@ -11923,7 +11925,7 @@ $ jupyter nbconvert --to html --execute device_api.ipynb --ExecutePreprocessor.t
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">api</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">kAVSUsername</span><span class="p">,</span> <span class="n">kAVSPassword</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">api</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">kAVSUsername</span><span class="p">,</span> <span class="n">kAVSPassword</span><span class="p">)</span>
 <span class="n">allDevices</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
     
 <span class="n">printDevices</span><span class="p">(</span><span class="n">allDevices</span><span class="p">)</span>
@@ -11962,7 +11964,7 @@ Status
 </tr>
 <tr>
 <td>
-demo_0_0ce4234e-388b-4380-a5db-93c2911926d1
+demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277
 </td>
 <td>
 Demo
@@ -11976,7 +11978,7 @@ Online
 </tr>
 <tr>
 <td>
-demo_1_277249bb-5ace-49a7-8e5c-9c2fc27df344
+demo_1_4e0a964a-b350-435f-82c9-de6ab5188af2
 </td>
 <td>
 Demo
@@ -12011,7 +12013,7 @@ Online
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">deviceId</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">kPairingCode</span><span class="p">,</span> <span class="s2">&quot;Webcaster on my desk&quot;</span><span class="p">)[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">deviceId</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">kPairingCode</span><span class="p">,</span> <span class="s2">&quot;Webcaster on my desk&quot;</span><span class="p">)[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -12024,7 +12026,7 @@ Online
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">printDevices</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get_all</span><span class="p">())</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">printDevices</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get_all</span><span class="p">())</span>
 </pre></div>
 
 </div>
@@ -12060,7 +12062,7 @@ Status
 </tr>
 <tr>
 <td>
-6f44711c6c7c438087dbb55269945c41
+a31372b672ce499783ced3dd6b4f1e82
 </td>
 <td>
 WCX2
@@ -12074,7 +12076,7 @@ Online
 </tr>
 <tr>
 <td>
-demo_0_0ce4234e-388b-4380-a5db-93c2911926d1
+demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277
 </td>
 <td>
 Demo
@@ -12088,7 +12090,7 @@ Online
 </tr>
 <tr>
 <td>
-demo_1_277249bb-5ace-49a7-8e5c-9c2fc27df344
+demo_1_4e0a964a-b350-435f-82c9-de6ab5188af2
 </td>
 <td>
 Demo
@@ -12123,7 +12125,9 @@ Online
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tmpImagePath</span> <span class="o">=</span> <span class="s2">&quot;/tmp/image_</span><span class="si">%s</span><span class="s2">.jpg&quot;</span> <span class="o">%</span> <span class="n">deviceId</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># Bit of delay after pairing</span>
+
+<span class="n">tmpImagePath</span> <span class="o">=</span> <span class="s2">&quot;/tmp/image_</span><span class="si">%s</span><span class="s2">.jpg&quot;</span> <span class="o">%</span> <span class="n">deviceId</span>
 <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get_state_image</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="n">tmpImagePath</span><span class="p">)</span>
 <span class="n">Image</span><span class="p">(</span><span class="n">tmpImagePath</span><span class="p">)</span>
 </pre></div>
@@ -12144,7 +12148,7 @@ Online
 
 
 <div class="output_jpeg output_subarea output_execute_result">
-<img src="data:image/jpeg;base64,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
+<img src="data:image/jpeg;base64,/9j//gAQTGF2YzU3LjY0LjEwMQD/2wBDAAgODhAOEBMTExMTExYVFhcXFxYWFhYXFxcZGRkdHR0ZGRkXFxkZHBwdHSAhIB4eHR4hISMjIyoqKCgxMTI8PEj/xAGiAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJCgsBAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKCxAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6EQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/wAARCAEgAgADASIAAhEAAxEA/9oADAMBAAIRAxEAPwD36kopaAEpaKSgApaKSgBaSiloAKSiloASlopKAClopKAFpKKWgApKKWgBKWikoAKWikoAWkopaACkopaAEpaKSgApaKSgBaSiloAKSiloASlopKAClopKAFpjdD9DTqaeh+hoA+Cf4/8AgX9a+9P4P+A/0r4L/j/4F/WvvT+D/gP9KAPgv+P/AIF/Wvvdeg+gr4I/j/4F/WvvZeg+goAG6H6Gvgdup+pr75bofoa+BW6n60AC9R9a++R0H0FfAy9R9a++R0H0FAAeh+hr4GbqfrX303Q/Q18Ct1P1oAF6j6198joPoK+Bl6j6198joPoKAHUUtJQAUUUtADD0P0NfBP8AH/wL+tfex6H6Gvgn+P8A4F/WgD72HQfQUHofoaB0H0FKeh+hoA+BW6n60L1H1obqfrQvUfWgD75XoPoKfTV6D6CloAKWikoAWkopaACkopaAEpaKSgApaKSgBaSiloAKSiloASlopKAClopKAFpKKWgApKKWgBKWikoAKWikoAWkopaACkopaAEpaKSgApaKSgBaSiloAKSiloASmnofoafTG6H6GgD4J/j/AOBf1r70/g/4D/Svgv8Aj/4F/WvvT+D/AID/AEoA+C/4/wDgX9a+9l6D6Cvgn+P/AIF/WvvZeg+goAVuh+hr4FbqfrX303Q/Q18Ct1P1oAF6j6198joPoK+Bl6j6198joPoKAFbofoa+BW6n6199N0P0NfArdT9aABeo+tffI6D6CvgZeo+tffI6D6CgB9JS0lABS0lLQAw9D9DXwT/H/wAC/rX3seh+hr4J/j/4F/WgD72HQfQUp6H6GkHQfQUp6H6GgD4FbqfrQvUfWhup+tC9R9aAPvpeg+gpaReg+gpaAClopKAFpKKWgApKKWgBKWikoAKWikoAWkopaACkopaAEpaKSgApaKSgBaSiloAKSiloASlopKAClopKAFpKKWgApKKWgBKWikoAKWikoAWkopaACkopaAEpp6H6Gn0xuh+hoA+Cf4/+Bf1r70/g/wCA/wBK+C/4/wDgX9a+9P4P+A/0oA+C/wCP/gX9a+9l6D6Cvgn+P/gX9a+9l6D6CgBW6H6GvgVup+tffTdD9DXwK3U/WgAXqPrX3yOg+gr4GXqPrX3yOg+goAVuh+hr4FbqfrX303Q/Q18Ct1P1oAF6j6198joPoK+Bl6j6198joPoKAH0lLSUAFLSUtADD0P0NfBP8f/Av6197Hofoa+Cf4/8AgX9aAPvYdB9BSnofoaQdB9BSnofoaAPgVup+tC9R9aG6n60L1H1oA++l6D6ClpF6D6CloAWkopaAEpaKSgApaKSgBaSiloAKSiloASlopKAClopKAFpKKWgApKKWgBKWikoAKWikoAWkopaACkopaAEpaKSgApaKSgBaSiloAKSiloASlopKAClopKAFpjdD9DTqaeh+hoA+Cf4/+Bf1r70/g/4D/Svgv+P/AIF/WvvT+D/gP9KAPgv+P/gX9a+9l6D6Cvgn+P8A4F/WvvZeg+goAVuh+hr4FbqfrX303Q/Q18Ct1P1oAF6j6198joPoK+Bl6j6198joPoKAFbofoa+BW6n6199N0P0NfArdT9aABeo+tffI6D6CvgZeo+tffI6D6CgB9JS0lABS0lLQAw9D9DXwT/H/AMC/rX3seh+hr4J/j/4F/WgD72HQfQUp6H6GkHQfQUp6H6GgD4FbqfrQvUfWhup+tC9R9aAPvpeg+gpaReg+gpaAE3D1H50mR6j86+Btx9T+dG4+p/OgD75yPUfnS7h6j86+Bdx9T+dG4+p/OgD75yPUfnS7h6j86+Bdx9T+dG4+p/OgD763D1H50mR6j86+Btx9T+dG4+p/OgD763D1H50mR6j86+Btx9T+dG4+p/OgD75yPUfnS7h6j86+Bdx9T+dG4+p/OgD75yPUfnS7h6j86+Bdx9T+dG4+p/OgD763D1H50mR6j86+Btx9T+dG4+p/OgD763D1H50mR6j86+Btx9T+dG4+p/OgD75yPUfnS7h6j86+Bdx9T+dG4+p/OgD75yPUfnS7h6j86+Bdx9T+dG4+p/OgD763D1H50mR6j86+Btx9T+dG4+p/OgD763D1H50mR6j86+Btx9T+dG4+p/OgD75yPUfnS7h6j86+Bdx9T+dG4+p/OgD75yPUfnS7h6j86+Bdx9T+dG4+p/OgD763D1H50mR6j86+Btx9T+dG4+p/OgD763D1H50mR6j86+Btx9T+dG4+p/OgD75yPUfnS7h6j86+Bdx9T+dG4+p/OgD75yPUfnS7h6j86+Bdx9T+dG4+p/OgD763D1H50xiMHkdD3r4I3H1P50bj6n86AH/x/wDAv6195ZGzqPu+vtXwRT9x9T+dAC/x/j/WvvVWGByOg718DU7cfU/nQB97swweR0Pevghup+tG4+p/Om0AOXqPrX3uCMDkdB3r4Gp24+p/OgD74Zhg8joe9fA7dT9aNx9T+dNoAcvUfWvvcEYHI6DvXwNTtx9T+dAH31uHqPzpMj1H518Dbj6n86Nx9T+dAH3zkeo/Ol3D1H518C7j6n86Nx9T+dAH3uSMHkdD3r4K/j/H+tN3H1P502gD75BGByOg70pIweR0PevgfcfU/nRuPqfzoAG6n60L1H1ptFAH30rDA5HQd6XcPUfnXwNuPqfzo3H1P50ANooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAop20+h/KjafQ/lQA2inbT6H8qNp9D+VADaKdtPofyo2n0P5UANop20+h/KjafQ/lQA2inbT6H8qNp9D+VADaKdtPofyo2n0P5UANop20+h/KjafQ/lQA2inbT6H8qNp9D+VADaKdtPofyo2n0P5UANop20+h/KjafQ/lQA2inbT6H8qNp9D+VADaKdtPofyo2n0P5UANop20+h/KjafQ/lQA2inbT6H8qNp9D+VADaKdtPofyo2n0P5UANop20+h/KjafQ/lQA2inbT6H8qNp9D+VADaKdtPofyo2n0P5UANop20+h/KjafQ/lQA2inbT6H8qNp9D+VADaKdtPofyo2n0P5UANop20+h/KjafQ/lQA2inbT6H8qNp9D+VADaKdtPofyo2n0P5UANop20+h/KjafQ/lQA2inbT6H8qNp9D+VADaKdtPofyo2n0P5UANop20+h/KjafQ/lQA2inbT6H8qNp9D+VADaKdtPofyo2n0P5UANop20+h/KjafQ/lQA2inbT6H8qNp9D+VAH3jNLBbRtJM0cSL1dyFUfialQxyKrptZWAZWGCCCMgg+hFcF4k06K5tLm5laR/ItZfLiLfulk2n97tHVwOBkkD0rqtL/wCQfZ/9e0H/AKLWgCm+s6TGzI15aqykqymRAQQcEHnqDWwJoGiEwePyiu8SZXZt/vbumPevH9OurWwin+26bdlmubiV5msvMQKznBLEZwAOcDFerR/Y9Qs1CCOa2lUYXb8hX024GMEdMDBFAFCDWdKuZvJiurd5CcBQw+Y+ik8N/wABJrbmkht42klaONFGWZyFUfUmvINXudM1FU0+yWJbkzoFkMYt1gMb/MwZwm44G0Km4nNdJ4i2ebpYnx9m+2Dz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
 "
 >
 </div>
@@ -12168,50 +12172,12 @@ Online
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s2">&quot;setparam:bitrate=</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="mi">1024</span><span class="p">)</span>  <span class="c1"># 1 Mbit/s</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s2">&quot;setparam:bitrate=</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="mi">1024</span><span class="p">)</span>  <span class="c1"># 1 Mbit/s</span>
 <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s1">&#39;setparam:resolution=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="s2">&quot;640x360&quot;</span><span class="p">)</span>
 
 <span class="n">devTelemetry</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">deviceId</span><span class="p">)[</span><span class="s2">&quot;Telemetry&quot;</span><span class="p">]</span>
 <span class="k">if</span> <span class="s2">&quot;settings&quot;</span> <span class="ow">in</span> <span class="n">devTelemetry</span><span class="p">:</span>
     <span class="n">printAsHtmlTable</span><span class="p">(</span><span class="n">devTelemetry</span><span class="p">[</span><span class="s2">&quot;settings&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">])</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Streaming-to-RTMP">Streaming to RTMP<a class="anchor-link" href="#Streaming-to-RTMP">&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">streamKey</span> <span class="o">=</span> <span class="s2">&quot;ENTER-STREAM-KEY-HERE&quot;</span>  <span class="c1"># youtube.com/live_dashboard</span>
-<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;rtmp://a.rtmp.youtube.com/live2/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">streamKey</span>
-<span class="n">_</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s2">&quot;rtmp.start:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Let it stream a little</span>
-<span class="n">streamId</span> <span class="o">=</span> <span class="s2">&quot;ENTER-PUBLIC-STREAM-ID-HERE&quot;</span>
-<span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="s1">&#39;&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/</span><span class="si">%s</span><span class="s1">&quot; frameborder=&quot;0&quot; allow=&quot;autoplay; encrypted-media&quot; allowfullscreen&gt;&lt;/iframe&gt;&#39;</span> <span class="o">%</span> <span class="n">streamId</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12229,7 +12195,43 @@ Online
 
 
 <div class="output_html rendered_html output_subarea ">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/ENTER-PUBLIC-STREAM-ID-HERE" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<table>
+<tbody>
+<tr>
+<th>
+id
+</th>
+<th>
+title
+</th>
+<th>
+value
+</th>
+</tr>
+<tr>
+<td>
+resolution
+</td>
+<td>
+Encoder resolution
+</td>
+<td>
+640x360
+</td>
+</tr>
+<tr>
+<td>
+bitrate
+</td>
+<td>
+Encoder bitrate
+</td>
+<td>
+1024
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 </div>
@@ -12237,13 +12239,96 @@ Online
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Streaming-to-RTMP">Streaming to RTMP<a class="anchor-link" href="#Streaming-to-RTMP">&#182;</a></h1><p>To start RTMP stream, use <code>rtmp.start</code> command:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s2">&quot;rtmp.start:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">kRTMPUrl</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Getting-RMTP-stream-status">Getting RMTP stream status<a class="anchor-link" href="#Getting-RMTP-stream-status">&#182;</a></h2><p>Device reports its status every 30 seconds and after receiving a command. To get the most recent device status, send <code>nop</code> command: device will do nothing, but it will force status submission.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># Let it start</span>
+
+<span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s2">&quot;nop&quot;</span><span class="p">)</span>
+
+<span class="n">rtmp_status</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">deviceId</span><span class="p">)[</span><span class="s2">&quot;Telemetry&quot;</span><span class="p">][</span><span class="s2">&quot;state&quot;</span><span class="p">][</span><span class="s2">&quot;rtmp&quot;</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">rtmp_status</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{
+    &#34;url&#34;: &#34;rtmp://10.1.2.16/live/test&#34;, 
+    &#34;speed&#34;: 0, 
+    &#34;bitrate&#34;: 0, 
+    &#34;sent&#34;: {
+        &#34;frames&#34;: 0, 
+        &#34;bytes&#34;: 0
+    }
+}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Stopping-RTMP-streaming">Stopping RTMP streaming<a class="anchor-link" href="#Stopping-RTMP-streaming">&#182;</a></h2>
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s2">&quot;rtmp.stop&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s2">&quot;rtmp.stop&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12264,7 +12349,7 @@ Online
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">deviceId</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">deviceId</span><span class="p">)</span>
 <span class="n">printDevices</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get_all</span><span class="p">())</span>
 </pre></div>
 
@@ -12301,7 +12386,7 @@ Status
 </tr>
 <tr>
 <td>
-demo_0_0ce4234e-388b-4380-a5db-93c2911926d1
+demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277
 </td>
 <td>
 Demo
@@ -12315,7 +12400,7 @@ Online
 </tr>
 <tr>
 <td>
-demo_1_277249bb-5ace-49a7-8e5c-9c2fc27df344
+demo_1_4e0a964a-b350-435f-82c9-de6ab5188af2
 </td>
 <td>
 Demo
