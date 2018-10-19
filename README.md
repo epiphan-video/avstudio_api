@@ -37,7 +37,7 @@ Documentation source is stored in `docs-source-slate` folder.
 
 ```shell
 $ cd slate
-$ build -t slate-builder .
+$ docker build -t slate-builder .
 ```
 
 2) Then use the container to build docs:
