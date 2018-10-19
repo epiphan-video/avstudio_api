@@ -40,7 +40,18 @@ $ cd slate
 $ docker build -t slate-builder .
 ```
 
-2) Then use the container to build docs:
+2) (optional) Start doc server:
+```bash
+docker run -it --rm \
+  -v $(pwd)/docs-source-slate/:/slate/source \
+  -v $(pwd)/docs:/slate/build \
+  -p 4567:4567 \
+  slate-builder bundle exec middleman server
+```
+
+...and open http://localhost:4567/ in your browser.
+
+3) When editing is done, use the container to build static docs:
 
 ```bash
 docker run -it --rm -v $(pwd)/docs-source-slate/:/slate/source -v $(pwd)/docs:/slate/build slate-builder
