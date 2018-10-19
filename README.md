@@ -5,7 +5,7 @@ This repo contains:
 - `/avstudio`: Python wrapper for AV Studio API
 - `/docs`: API reference
 - `/device_api.ipynb`: Python notebook with API tutorial
-- `/device_api.html`: static version of the tutorial
+- `/device_api.html`: static version of the tutorial [link](http://htmlpreview.github.io/?https://github.com/epiphan-video/avstudio_api/blob/master/device_api.html)
 
 ## Installation
 
