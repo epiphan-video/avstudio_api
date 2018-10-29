@@ -61,3 +61,8 @@ This command will update files in `docs` folder, if necessary.
 
 3) git commit and push
 
+### Exporting notebook tutorial:
+
+```
+jupyter nbconvert --to html --execute device_api.ipynb --ExecutePreprocessor.timeout=-1
+```
