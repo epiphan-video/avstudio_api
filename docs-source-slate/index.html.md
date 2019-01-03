@@ -25,41 +25,40 @@ We have language bindings in bash and Python. You can view code examples in the 
 
 # Big picture
 
-Each encoder device has a long poll connection to AV Studio and waits for commands. Initially, all devices are *unpaired*, which means that they are not assiciated with any AV Studio account. To pair a device, log in to your AV Studio account and send a pairing command to AV Studio using the pairing code. AV Studio finds the device that has this code and connects your account to it.
+Each encoder device has a long poll connection to AV Studio and waits for commands. Initially, all devices are *unpaired*, which means that they are not associated with any AV Studio account. To pair a device, log in to your AV Studio account and send a pairing command to AV Studio using the pairing code. AV Studio finds the device that has this code and connects your account to it.
 
-# Authentication
 
-```python
-from avstudio import AVStudioAPI
-
-api = AVStudioAPI("go.avstudio.com")
-api.login(USERNAME, PASSWORD)
-```
+# Authorization
 
 ```shell
-curl -v https://go.avstudio.com/front/api/v1t/oauth/base/USERNAME?pwd=PASSWORD
+curl https://go.avstudio.com/front/api/v2/users/me \
+  -H "Authorization: Bearer TOKEN"
 ```
 
-To login to your AV Studio account, use this code:
-
-```
-> GET /front/api/v1t/oauth/base/USERNAME?pwd=PASSWORD HTTP/2
-> Host: go.avstudio.com
-> User-Agent: curl/7.54.0
-> Accept: */*
->
-< HTTP/2 302
-< server: nginx/1.11.3
-< date: Fri, 12 Oct 2018 17:43:42 GMT
-< content-type: text/html; charset=utf-8
-< content-length: 91
-< location: https://go.avstudio.com/TEAMID#/scenes
-< set-cookie: KSESSIONID=KSESSIONID; Path=/; Expires=Sat, 12 Oct 2019 17:43:42 GMT; Max-Age=31536000
-< x-current-team-id: TEAMID
-< strict-transport-security: max-age=15724800; preload
+```python
+api = AVStudioAPI2()
+api.setAuthToken(TOKEN)
 ```
 
-The successful response has team and session identifiers, which are used in subsequent requests in this session.
+AV Studio uses bearer token authorization ([rfc6750](https://tools.ietf.org/html/rfc6750)). HTTP API requests must include auth token in their HTTP headers: 
+
+`Authorization: Bearer <TOKEN>`
+
+
+## Issuing a token
+
+Tokens are issued in "Integrations" tab in your AV Studio team settings:
+
+<video width="100%" height="auto" src="images/new_token.mp4" controls/>
+
+Few notes about tokens:
+
+- Tokens can be issued by the team's owner or admin. Multiple tokens can be issued for a team, but each token is linked to one team.
+
+- Tokens have admin permissions, without access to tokens and user management functionality.
+
+- Tokens do not expire.
+
 
 # Getting All Devices
 
@@ -71,13 +70,13 @@ for d in devices:
     print d["Id"], d["Name"]
 
 # Output:
-# demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277 My First Demo Device
+# demo_0_d3d68f3c My First Demo Device
 # demo_1_4e0a964a-b350-435f-82c9-de6ab5188af2 My Second Demo Device
 ```
 
 ```shell
-curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices \
-  -H "Cookie: KSESSIONID=KSESSIONID"
+curl https://go.avstudio.com/front/api/v2/devices \
+    -H "Authorization: Bearer TOKEN"
 ```
 
 > The above command returns array with the device info dictionaries:
@@ -85,34 +84,30 @@ curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices \
 ```json
 [
   {
-    "Id": "demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277",
+    "Id": "demo_0_d3d68f3c",
     "Name": "My First Demo Device",
     "Model": "Demo",
     "Status": "Online",
     "Recording": "unknown",
     "StateTime": 1539366714.931,
-    "SnapshotURL": "/front/api/v1/devices/demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277/state.jpg",
+    "SnapshotURL": "/front/api/v1/devices/demo_0_d3d68f3c/state.jpg",
     "IsUnpaired": false,
     "Telemetry": {}
   }
 ]
 ```
 
-`GET /front/api/v1t/team/TEAMID/devices`
-
-Parameter | Description
---------- | -----------
-TEAMID | Team ID from auth response
+`GET /front/api/v2/devices`
 
 # Getting a Specific Device
 
 ```python
-device = api.Devices.get("demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277")
+device = api.Devices.get("demo_0_d3d68f3c")
 ```
 
 ```shell
-curl https://go.avstudio.com/front/api/v1t/team/6ef82053-5bb5-4ba6-9e43-e8565a827b9c/devices/demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277 \
-  -H "Cookie: KSESSIONID=SESSIONID"
+curl https://go.avstudio.com/front/api/v2/devices/demo_0_d3d68f3c \
+  -H "Authorization: Bearer TOKEN"
 ```
 
 > Result:
@@ -120,24 +115,23 @@ curl https://go.avstudio.com/front/api/v1t/team/6ef82053-5bb5-4ba6-9e43-e8565a82
 ```json
 [
   {
-    "Id": "demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277",
+    "Id": "demo_0_d3d68f3c",
     "Name": "My First Demo Device",
     "Model": "Demo",
     "Status": "Online",
     "Recording": "unknown",
     "StateTime": 1539366714.931,
-    "SnapshotURL": "/front/api/v1/devices/demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277/state.jpg",
+    "SnapshotURL": "/front/api/v1/devices/demo_0_d3d68f3c/state.jpg",
     "IsUnpaired": false,
     "Telemetry": {}
   }
 ]
 ```
 
-`GET /front/api/v1t/team/TEAMID/devices/DEVICEID`
+`GET /front/api/v2/devices/DEVICEID`
 
 Parameter | Description
 --------- | -----------
-TEAMID | Team ID from the auth response
 DEVICEID | The ID of the device to retrieve
 
 # Pairing a Real Device
@@ -160,7 +154,7 @@ Or select AV Studio using a monitor and attached USB mouse:
 
 To pair a device we use the following endpoint:
 
-`POST /front/api/v1t/team/TEAMID/devices`
+`POST /front/api/v2/devices`
 
 
 ```python
@@ -169,8 +163,8 @@ device_id = r["ID"]
 ```
 
 ```shell
-curl -X POST https://go.avstudio.com/front/api/v1t/team/TEAMID/devices \
-  -H "Cookie: KSESSIONID=SESSIONID" \
+curl -X POST https://go.avstudio.com/front/api/v2/devices \
+  -H "Authorization: Bearer TOKEN" \
   -d '{"DeviceID": "5cf06c29", "Name": "NEW DEVICE"}'
 ```
 
@@ -195,14 +189,14 @@ api.Devices.run_command(deviceId, "setparam:bitrate=1000")
 ```
 
 ```shell
-curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task \
- -H "Cookie: KSESSIONID=SESSIONID" \
- --data-binary '{"cmd": "setparam:bitrate=1000"}'
+curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task \
+  -H "Authorization: Bearer TOKEN" \
+  --data-binary '{"cmd": "setparam:bitrate=1000"}'
 ```
 
 To send commands to devices, POST `{"cmd": COMMAND}` json to this endpoint:
 
-`POST front/api/v1t/team/TEAMID/devices/DEVICEID/task`
+`POST front/api/v2/devices/DEVICEID/task`
 
 ## setparam:
 
@@ -213,8 +207,8 @@ api.Devices.get(deviceId)["Telemetry"]["settings"].keys()
 ```
 
 ```shell
-curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID \
--H "Cookie: KSESSIONID=SESSIONID" \
+curl https://go.avstudio.com/front/api/v2/devices/DEVICEID \
+  -H "Authorization: Bearer TOKEN" \
 | jq '.Telemetry.settings | keys'
 
 # Output:
@@ -240,9 +234,9 @@ api.Devices.run_command(deviceId, "rtmp.start:rtmp://10.1.2.16/live/test")
 ```
 
 ```shell
- curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task \
- -H "Cookie: KSESSIONID=SESSIONID" \
- --data-binary '{"cmd": "rtmp.start:rtmp://10.1.2.16/live/test"}'
+ curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task \
+  -H "Authorization: Bearer TOKEN" \
+  --data-binary '{"cmd": "rtmp.start:rtmp://10.1.2.16/live/test"}'
 ```
 
 > The status of the RTMP stream is reported in `Telemetry/state/rtmp`.
@@ -270,9 +264,9 @@ api.Devices.run_command(deviceId, "rtmp.stop")
 ```
 
 ```shell
- curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task \
- -H "Cookie: KSESSIONID=SESSIONID" \
- --data-binary '{"cmd": "rtmp.stop"}'
+ curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task \
+  -H "Authorization: Bearer TOKEN" \
+  --data-binary '{"cmd": "rtmp.stop"}'
 ```
 
 To stop the RTMP stream that was started by `rtmp.start`
@@ -284,9 +278,9 @@ api.Devices.run_command(deviceId, "firmware.update")
 ```
 
 ```shell
- curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task \
- -H "Cookie: KSESSIONID=SESSIONID" \
- --data-binary '{"cmd": "firmware.update"}'
+ curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task \
+  -H "Authorization: Bearer TOKEN" \
+  --data-binary '{"cmd": "firmware.update"}'
 ```
 
 Starts a firmware update if a more recent firmware version is available.
@@ -298,9 +292,9 @@ api.Devices.run_command(deviceId, "unpair")
 ```
 
 ```shell
- curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task \
- -H "Cookie: KSESSIONID=SESSIONID" \
- --data-binary '{"cmd": "unpair"}'
+ curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task \
+  -H "Authorization: Bearer TOKEN" \
+  --data-binary '{"cmd": "unpair"}'
 ```
 
 Unpairs the device from the account that it's paired to.

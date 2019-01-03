@@ -226,7 +226,12 @@
             <a href="#big-picture" class="toc-h1 toc-link" data-title="Big picture">Big picture</a>
           </li>
           <li>
-            <a href="#authentication" class="toc-h1 toc-link" data-title="Authentication">Authentication</a>
+            <a href="#authorization" class="toc-h1 toc-link" data-title="Authorization">Authorization</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#issuing-a-token" class="toc-h2 toc-link" data-title="Issuing a token">Issuing a token</a>
+                  </li>
+              </ul>
           </li>
           <li>
             <a href="#getting-all-devices" class="toc-h1 toc-link" data-title="Getting All Devices">Getting All Devices</a>
@@ -281,30 +286,27 @@
 
 <p>We have language bindings in bash and Python. You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
 <h1 id='big-picture'>Big picture</h1>
-<p>Each encoder device has a long poll connection to AV Studio and waits for commands. Initially, all devices are <em>unpaired</em>, which means that they are not assiciated with any AV Studio account. To pair a device, log in to your AV Studio account and send a pairing command to AV Studio using the pairing code. AV Studio finds the device that has this code and connects your account to it.</p>
-<h1 id='authentication'>Authentication</h1><pre class="highlight python tab-python"><code><span class="kn">from</span> <span class="nn">avstudio</span> <span class="kn">import</span> <span class="n">AVStudioAPI</span>
+<p>Each encoder device has a long poll connection to AV Studio and waits for commands. Initially, all devices are <em>unpaired</em>, which means that they are not associated with any AV Studio account. To pair a device, log in to your AV Studio account and send a pairing command to AV Studio using the pairing code. AV Studio finds the device that has this code and connects your account to it.</p>
+<h1 id='authorization'>Authorization</h1><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v2/users/me <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span>
+</code></pre><pre class="highlight python tab-python"><code><span class="n">api</span> <span class="o">=</span> <span class="n">AVStudioAPI2</span><span class="p">()</span>
+<span class="n">api</span><span class="o">.</span><span class="n">setAuthToken</span><span class="p">(</span><span class="n">TOKEN</span><span class="p">)</span>
+</code></pre>
+<p>AV Studio uses bearer token authorization (<a href="https://tools.ietf.org/html/rfc6750">rfc6750</a>). HTTP API requests must include auth token in their HTTP headers: </p>
 
-<span class="n">api</span> <span class="o">=</span> <span class="n">AVStudioAPI</span><span class="p">(</span><span class="s">"go.avstudio.com"</span><span class="p">)</span>
-<span class="n">api</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
-</code></pre><pre class="highlight shell tab-shell"><code>curl -v https://go.avstudio.com/front/api/v1t/oauth/base/USERNAME?pwd<span class="o">=</span>PASSWORD
-</code></pre>
-<p>To login to your AV Studio account, use this code:</p>
-<pre class="highlight plaintext"><code>&gt; GET /front/api/v1t/oauth/base/USERNAME?pwd=PASSWORD HTTP/2
-&gt; Host: go.avstudio.com
-&gt; User-Agent: curl/7.54.0
-&gt; Accept: */*
-&gt;
-&lt; HTTP/2 302
-&lt; server: nginx/1.11.3
-&lt; date: Fri, 12 Oct 2018 17:43:42 GMT
-&lt; content-type: text/html; charset=utf-8
-&lt; content-length: 91
-&lt; location: https://go.avstudio.com/TEAMID#/scenes
-&lt; set-cookie: KSESSIONID=KSESSIONID; Path=/; Expires=Sat, 12 Oct 2019 17:43:42 GMT; Max-Age=31536000
-&lt; x-current-team-id: TEAMID
-&lt; strict-transport-security: max-age=15724800; preload
-</code></pre>
-<p>The successful response has team and session identifiers, which are used in subsequent requests in this session.</p>
+<p><code>Authorization: Bearer &lt;TOKEN&gt;</code></p>
+<h2 id='issuing-a-token'>Issuing a token</h2>
+<p>Tokens are issued in &quot;Integrations&quot; tab in your AV Studio team settings:</p>
+
+<p><video width="100%" height="auto" src="images/new_token.mp4" controls/></p>
+
+<p>Few notes about tokens:</p>
+
+<ul>
+<li><p>Tokens can be issued by the team&#39;s owner or admin. Multiple tokens can be issued for a team, but each token is linked to one team.</p></li>
+<li><p>Tokens have admin permissions, without access to tokens and user management functionality.</p></li>
+<li><p>Tokens do not expire.</p></li>
+</ul>
 <h1 id='getting-all-devices'>Getting All Devices</h1>
 <p>There&#39;re two devices in a newly created AV Studio account, let&#39;s retrieve them:</p>
 <pre class="highlight python tab-python"><code><span class="n">devices</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
@@ -312,63 +314,51 @@
     <span class="k">print</span> <span class="n">d</span><span class="p">[</span><span class="s">"Id"</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s">"Name"</span><span class="p">]</span>
 
 <span class="c"># Output:</span>
-<span class="c"># demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277 My First Demo Device</span>
+<span class="c"># demo_0_d3d68f3c My First Demo Device</span>
 <span class="c"># demo_1_4e0a964a-b350-435f-82c9-de6ab5188af2 My Second Demo Device</span>
-</code></pre><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices <span class="se">\</span>
-  -H <span class="s2">"Cookie: KSESSIONID=KSESSIONID"</span>
+</code></pre><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v2/devices <span class="se">\</span>
+    -H <span class="s2">"Authorization: Bearer TOKEN"</span>
 </code></pre>
 <blockquote>
 <p>The above command returns array with the device info dictionaries:</p>
 </blockquote>
 <pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
   </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"Id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"Id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"demo_0_d3d68f3c"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My First Demo Device"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"Model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Demo"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"Status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Online"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"Recording"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"StateTime"</span><span class="p">:</span><span class="w"> </span><span class="mf">1539366714.931</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"SnapshotURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/front/api/v1/devices/demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277/state.jpg"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"SnapshotURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/front/api/v1/devices/demo_0_d3d68f3c/state.jpg"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"IsUnpaired"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
     </span><span class="s2">"Telemetry"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre>
-<p><code>GET /front/api/v1t/team/TEAMID/devices</code></p>
-
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>TEAMID</td>
-<td>Team ID from auth response</td>
-</tr>
-</tbody></table>
-<h1 id='getting-a-specific-device'>Getting a Specific Device</h1><pre class="highlight python tab-python"><code><span class="n">device</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">"demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277"</span><span class="p">)</span>
-</code></pre><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v1t/team/6ef82053-5bb5-4ba6-9e43-e8565a827b9c/devices/demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277 <span class="se">\</span>
-  -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span>
+<p><code>GET /front/api/v2/devices</code></p>
+<h1 id='getting-a-specific-device'>Getting a Specific Device</h1><pre class="highlight python tab-python"><code><span class="n">device</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">"demo_0_d3d68f3c"</span><span class="p">)</span>
+</code></pre><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v2/devices/demo_0_d3d68f3c <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span>
 </code></pre>
 <blockquote>
 <p>Result:</p>
 </blockquote>
 <pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
   </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"Id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"Id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"demo_0_d3d68f3c"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"Name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My First Demo Device"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"Model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Demo"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"Status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Online"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"Recording"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"StateTime"</span><span class="p">:</span><span class="w"> </span><span class="mf">1539366714.931</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"SnapshotURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/front/api/v1/devices/demo_0_d3d68f3c-cd3e-4ee6-ab25-4646973c6277/state.jpg"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"SnapshotURL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/front/api/v1/devices/demo_0_d3d68f3c/state.jpg"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"IsUnpaired"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
     </span><span class="s2">"Telemetry"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre>
-<p><code>GET /front/api/v1t/team/TEAMID/devices/DEVICEID</code></p>
+<p><code>GET /front/api/v2/devices/DEVICEID</code></p>
 
 <table><thead>
 <tr>
@@ -376,10 +366,6 @@
 <th>Description</th>
 </tr>
 </thead><tbody>
-<tr>
-<td>TEAMID</td>
-<td>Team ID from the auth response</td>
-</tr>
 <tr>
 <td>DEVICEID</td>
 <td>The ID of the device to retrieve</td>
@@ -400,11 +386,11 @@
 <h3 id='pairing-the-device'>Pairing the Device</h3>
 <p>To pair a device we use the following endpoint:</p>
 
-<p><code>POST /front/api/v1t/team/TEAMID/devices</code></p>
+<p><code>POST /front/api/v2/devices</code></p>
 <pre class="highlight python tab-python"><code><span class="n">r</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">"5cf06c29"</span><span class="p">,</span> <span class="s">"NEW DEVICE"</span><span class="p">)</span>
 <span class="n">device_id</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s">"ID"</span><span class="p">]</span>
-</code></pre><pre class="highlight shell tab-shell"><code>curl -X POST https://go.avstudio.com/front/api/v1t/team/TEAMID/devices <span class="se">\</span>
-  -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
+</code></pre><pre class="highlight shell tab-shell"><code>curl -X POST https://go.avstudio.com/front/api/v2/devices <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span> <span class="se">\</span>
   -d <span class="s1">'{"DeviceID": "5cf06c29", "Name": "NEW DEVICE"}'</span>
 </code></pre>
 <blockquote>
@@ -420,18 +406,18 @@
 <p>e.g. setting bitrate to 1 Mbit/s:</p>
 </blockquote>
 <pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"setparam:bitrate=1000"</span><span class="p">)</span>
-</code></pre><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task <span class="se">\</span>
- -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
- --data-binary <span class="s1">'{"cmd": "setparam:bitrate=1000"}'</span>
+</code></pre><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span> <span class="se">\</span>
+  --data-binary <span class="s1">'{"cmd": "setparam:bitrate=1000"}'</span>
 </code></pre>
 <p>To send commands to devices, POST <code>{&quot;cmd&quot;: COMMAND}</code> json to this endpoint:</p>
 
-<p><code>POST front/api/v1t/team/TEAMID/devices/DEVICEID/task</code></p>
+<p><code>POST front/api/v2/devices/DEVICEID/task</code></p>
 <h2 id='setparam'>setparam:</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">deviceId</span><span class="p">)[</span><span class="s">"Telemetry"</span><span class="p">][</span><span class="s">"settings"</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 
 <span class="c"># Output: ['resolution', 'bitrate']</span>
-</code></pre><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID <span class="se">\</span>
--H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
+</code></pre><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v2/devices/DEVICEID <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span> <span class="se">\</span>
 | jq <span class="s1">'.Telemetry.settings | keys'</span>
 
 <span class="c"># Output:</span>
@@ -463,9 +449,9 @@
 </tr>
 </tbody></table>
 <h2 id='rtmp-start-url'>rtmp.start:url</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"rtmp.start:rtmp://10.1.2.16/live/test"</span><span class="p">)</span>
-</code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task <span class="se">\</span>
- -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
- --data-binary <span class="s1">'{"cmd": "rtmp.start:rtmp://10.1.2.16/live/test"}'</span>
+</code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span> <span class="se">\</span>
+  --data-binary <span class="s1">'{"cmd": "rtmp.start:rtmp://10.1.2.16/live/test"}'</span>
 </code></pre>
 <blockquote>
 <p>The status of the RTMP stream is reported in <code>Telemetry/state/rtmp</code>.</p>
@@ -484,21 +470,21 @@
 </span></code></pre>
 <p>This command starts an RTMP stream to a given RTMP url.</p>
 <h2 id='rtmp-stop'>rtmp.stop</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"rtmp.stop"</span><span class="p">)</span>
-</code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task <span class="se">\</span>
- -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
- --data-binary <span class="s1">'{"cmd": "rtmp.stop"}'</span>
+</code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span> <span class="se">\</span>
+  --data-binary <span class="s1">'{"cmd": "rtmp.stop"}'</span>
 </code></pre>
 <p>To stop the RTMP stream that was started by <code>rtmp.start</code></p>
 <h2 id='firmware-update'>firmware.update</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"firmware.update"</span><span class="p">)</span>
-</code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task <span class="se">\</span>
- -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
- --data-binary <span class="s1">'{"cmd": "firmware.update"}'</span>
+</code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span> <span class="se">\</span>
+  --data-binary <span class="s1">'{"cmd": "firmware.update"}'</span>
 </code></pre>
 <p>Starts a firmware update if a more recent firmware version is available.</p>
 <h2 id='unpair'>unpair</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"unpair"</span><span class="p">)</span>
-</code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v1t/team/TEAMID/devices/DEVICEID/task <span class="se">\</span>
- -H <span class="s2">"Cookie: KSESSIONID=SESSIONID"</span> <span class="se">\</span>
- --data-binary <span class="s1">'{"cmd": "unpair"}'</span>
+</code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span> <span class="se">\</span>
+  --data-binary <span class="s1">'{"cmd": "unpair"}'</span>
 </code></pre>
 <p>Unpairs the device from the account that it&#39;s paired to.</p>
 
