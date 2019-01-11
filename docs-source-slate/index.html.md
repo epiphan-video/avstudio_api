@@ -178,6 +178,7 @@ curl -X POST https://go.avstudio.com/front/api/v2/devices \
 }
 ```
 
+
 # Device Commands
 
 ## Sending Commands to Devices
@@ -226,6 +227,58 @@ Param|Possible values|Description
 -----|---------------|-----------
 resolution|1920x1080, 1280x720, 640x360, 320x180|Stream frame size
 bitrate|up to 4000|Stream bitrate, in Kbit/s
+
+## recording.start/stop
+
+```python
+api.Devices.run_command(deviceId, "recording.start")
+api.Devices.run_command(deviceId, "recording.stop")
+```
+
+```shell
+ curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task \
+  -H "Authorization: Bearer TOKEN" \
+  --data-binary '{"cmd": "recording.start"}'
+
+ curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task \
+  -H "Authorization: Bearer TOKEN" \
+  --data-binary '{"cmd": "recording.stop"}'
+```
+
+These commands start and stop recording. See "[Recording](/#recording)" section for details.
+
+## afu.start/stop
+
+```python
+api.Devices.run_command(deviceId, "afu.start")
+api.Devices.run_command(deviceId, "afu.stop")
+```
+
+```shell
+ curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task \
+  -H "Authorization: Bearer TOKEN" \
+  --data-binary '{"cmd": "afu.start"}'
+
+ curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task \
+  -H "Authorization: Bearer TOKEN" \
+  --data-binary '{"cmd": "afu.stop"}'
+```
+
+These commands start and stop uploading the recording footage to AV Studio. See "[Recording](/#recording)" section for details.
+
+## footage.clear
+
+```python
+api.Devices.run_command(deviceId, "footage.clear")
+```
+
+```shell
+ curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task \
+  -H "Authorization: Bearer TOKEN" \
+  --data-binary '{"cmd": "footage.clear"}'
+```
+
+This command deletes recorded footage on the device (the footage that is not uploaded yet). See "[Recording](/#recording)" section for details.
 
 ## rtmp.start:url
 
@@ -298,3 +351,134 @@ api.Devices.run_command(deviceId, "unpair")
 ```
 
 Unpairs the device from the account that it's paired to.
+
+
+# Recording
+
+Webcaster X2 devices can record footage and upload it to the AV Studio account, to which they are paired.
+
+On Webcaster X2 stream is recorded to SD card, or internal flash memory, if SD card is full or is not available.
+
+Recorder is started by `recording.start` and stopped by `recording.stop` commands. If uploading is enabled by `afu.start` command, it gets uploaded to AV Studio and deleted from device storage.
+
+If uploading is disabled by `afu.stop` command, footage stays on device, until it's deleted by `footage.clear` command, or uploading is started.
+
+Recording, streaming and uploading can run at the same time.
+
+The footage, uploaded to AV Studio, is billed according to the account's plan.
+
+## Recorded Footage on Device
+
+```python
+api.Devices.get(deviceId)["Telemetry"]["state"]["afu"]
+
+# Output:
+# {
+#   "queue_duration": 4793,    # The duration of stored footage, in seconds
+#   "queue_size": 2513406672,  # The size of stored footage, in bytes
+#   "speed": 0,                # Uploading speed (if footage is being uploaded)
+#   "state": False             # True if uploading enabled, False otherwise
+# }
+```
+
+```shell
+curl https://go.avstudio.com/front/api/v2/devices/DEVICEID \
+  -H "Authorization: Bearer TOKEN" \
+| jq '.Telemetry.state.afu'
+
+# Output:
+# {
+#   "queue_duration": 4793,    # The duration of stored footage, in seconds
+#   "queue_size": 2513406672,  # The size of stored footage, in bytes
+#   "speed": 0,                # Uploading speed (if footage is being uploaded)
+#   "state": False             # True if uploading enabled, False otherwise
+# }
+```
+
+Status of recorded, but not uploaded footage is reported in `state.afu` dictionary of device status.
+
+# Getting Recordings
+
+## Getting List of Uploaded Chunks
+
+```shell
+curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/thumbnails?from=START&to=END \
+  -H "Authorization: Bearer TOKEN"
+
+# Output:
+# [
+#   {
+#    "Start": 1546887235.983,
+#    "End": 1546887246.35,
+#    "Url": "chunks/DEVICEID/v2/video/000003000000.mp4"
+#   },
+#   {
+#    "Start": 1546887246.383,
+#    "End": 1546887256.749,
+#    "Url": "chunks/DEVICEID/v2/video/000003000001.mp4"
+#   },
+#   {
+#    "Start": 1546887256.783,
+#    "End": 1546887267.016,
+#    "Url": "chunks/DEVICEID/v2/video/000003000002.mp4"
+#   }
+# ]
+```
+
+```python
+api.Devices.get_timeline(DEVICEID, START, END)
+
+# Output:
+# [
+#   {
+#    "Start": 1546887235.983,
+#    "End": 1546887246.35,
+#    "Url": "chunks/DEVICEID/v2/video/000003000000.mp4"
+#   },
+#   {
+#    "Start": 1546887246.383,
+#    "End": 1546887256.749,
+#    "Url": "chunks/DEVICEID/v2/video/000003000001.mp4"
+#   },
+#   {
+#    "Start": 1546887256.783,
+#    "End": 1546887267.016,
+#    "Url": "chunks/DEVICEID/v2/video/000003000002.mp4"
+#   }
+# ]
+```
+
+`GET /front/api/v2/devices/DEVICEID/thumbnails?from=START&to=END`
+
+Parameter | Description
+--------- | -----------
+DEVICEID  | The ID of the device to retrieve
+START, STOP| Time range (UNIX timestamps)
+
+## Downloading Chunks
+
+```shell
+
+# Getting url of the first chunk from the range
+url=$(curl -s "https://go.avstudio.com/front/api/v2/devices/DEVICEID/thumbnails?from=START&to=STOP" \
+ -H "Authorization: Bearer TOKEN" | jq -r .[0].Url)
+
+# Downloading the chunk
+curl -o '/tmp/chunk.mp4' "https://go.avstudio.com/front/api/v2/media/$url" \
+ -H "Authorization: Bearer TOKEN"
+```
+
+```python
+
+# Getting url of the first chunk from the range
+url = api.Devices.get_timeline(DEVICEID, START, END)[0]["Url"]
+
+# Downloading the chunk
+api.HTTP.http_download_file(url, "/tmp/chunk.mp4")
+```
+
+`GET /front/api/v2/media/URL`
+
+Parameter | Description
+--------- | -----------------------------
+URL       | Chunk URL from list of chunks
