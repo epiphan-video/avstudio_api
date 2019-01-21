@@ -260,6 +260,15 @@
                     <a href="#setparam" class="toc-h2 toc-link" data-title="setparam:">setparam:</a>
                   </li>
                   <li>
+                    <a href="#recording-start-stop" class="toc-h2 toc-link" data-title="recording.start/stop">recording.start/stop</a>
+                  </li>
+                  <li>
+                    <a href="#afu-start-stop" class="toc-h2 toc-link" data-title="afu.start/stop">afu.start/stop</a>
+                  </li>
+                  <li>
+                    <a href="#footage-clear" class="toc-h2 toc-link" data-title="footage.clear">footage.clear</a>
+                  </li>
+                  <li>
                     <a href="#rtmp-start-url" class="toc-h2 toc-link" data-title="rtmp.start:url">rtmp.start:url</a>
                   </li>
                   <li>
@@ -270,6 +279,25 @@
                   </li>
                   <li>
                     <a href="#unpair" class="toc-h2 toc-link" data-title="unpair">unpair</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#recording" class="toc-h1 toc-link" data-title="Recording">Recording</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#recorded-footage-on-device" class="toc-h2 toc-link" data-title="Recorded Footage on Device">Recorded Footage on Device</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#getting-recordings" class="toc-h1 toc-link" data-title="Getting Recordings">Getting Recordings</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#getting-list-of-uploaded-chunks" class="toc-h2 toc-link" data-title="Getting List of Uploaded Chunks">Getting List of Uploaded Chunks</a>
+                  </li>
+                  <li>
+                    <a href="#downloading-chunks" class="toc-h2 toc-link" data-title="Downloading Chunks">Downloading Chunks</a>
                   </li>
               </ul>
           </li>
@@ -447,7 +475,40 @@
 <td>up to 4000</td>
 <td>Stream bitrate, in Kbit/s</td>
 </tr>
+<tr>
+<td>chunk_duration</td>
+<td>10-3600</td>
+<td>Chunk duration, in seconds</td>
+</tr>
 </tbody></table>
+<h2 id='recording-start-stop'>recording.start/stop</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"recording.start"</span><span class="p">)</span>
+<span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"recording.stop"</span><span class="p">)</span>
+</code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span> <span class="se">\</span>
+  --data-binary <span class="s1">'{"cmd": "recording.start"}'</span>
+
+ curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span> <span class="se">\</span>
+  --data-binary <span class="s1">'{"cmd": "recording.stop"}'</span>
+</code></pre>
+<p>These commands start and stop recording. See &quot;<a href="/#recording">Recording</a>&quot; section for details.</p>
+<h2 id='afu-start-stop'>afu.start/stop</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"afu.start"</span><span class="p">)</span>
+<span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"afu.stop"</span><span class="p">)</span>
+</code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span> <span class="se">\</span>
+  --data-binary <span class="s1">'{"cmd": "afu.start"}'</span>
+
+ curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span> <span class="se">\</span>
+  --data-binary <span class="s1">'{"cmd": "afu.stop"}'</span>
+</code></pre>
+<p>These commands start and stop uploading the recording footage to AV Studio. See &quot;<a href="/#recording">Recording</a>&quot; section for details.</p>
+<h2 id='footage-clear'>footage.clear</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"footage.clear"</span><span class="p">)</span>
+</code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span> <span class="se">\</span>
+  --data-binary <span class="s1">'{"cmd": "footage.clear"}'</span>
+</code></pre>
+<p>This command deletes recorded footage on the device (the footage that is not uploaded yet). See &quot;<a href="/#recording">Recording</a>&quot; section for details.</p>
 <h2 id='rtmp-start-url'>rtmp.start:url</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">run_command</span><span class="p">(</span><span class="n">deviceId</span><span class="p">,</span> <span class="s">"rtmp.start:rtmp://10.1.2.16/live/test"</span><span class="p">)</span>
 </code></pre><pre class="highlight shell tab-shell"><code> curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/task <span class="se">\</span>
   -H <span class="s2">"Authorization: Bearer TOKEN"</span> <span class="se">\</span>
@@ -487,6 +548,127 @@
   --data-binary <span class="s1">'{"cmd": "unpair"}'</span>
 </code></pre>
 <p>Unpairs the device from the account that it&#39;s paired to.</p>
+<h1 id='recording'>Recording</h1>
+<p>Webcaster X2 devices can record footage and upload it to the AV Studio account, to which they are paired.</p>
+
+<p>On Webcaster X2 stream is recorded to SD card, or internal flash memory, if SD card is full or is not available.</p>
+
+<p>Recorder is started by <code>recording.start</code> and stopped by <code>recording.stop</code> commands. If uploading is enabled by <code>afu.start</code> command, it gets uploaded to AV Studio and deleted from device storage.</p>
+
+<p>If uploading is disabled by <code>afu.stop</code> command, footage stays on device, until it&#39;s deleted by <code>footage.clear</code> command, or uploading is started.</p>
+
+<p>Recording, streaming and uploading can run at the same time.</p>
+
+<p>The footage, uploaded to AV Studio, is billed according to the account&#39;s plan.</p>
+<h2 id='recorded-footage-on-device'>Recorded Footage on Device</h2><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">deviceId</span><span class="p">)[</span><span class="s">"Telemetry"</span><span class="p">][</span><span class="s">"state"</span><span class="p">][</span><span class="s">"afu"</span><span class="p">]</span>
+
+<span class="c"># Output:</span>
+<span class="c"># {</span>
+<span class="c">#   "queue_duration": 4793,    # The duration of stored footage, in seconds</span>
+<span class="c">#   "queue_size": 2513406672,  # The size of stored footage, in bytes</span>
+<span class="c">#   "speed": 0,                # Uploading speed (if footage is being uploaded)</span>
+<span class="c">#   "state": False             # True if uploading enabled, False otherwise</span>
+<span class="c"># }</span>
+</code></pre><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v2/devices/DEVICEID <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span> <span class="se">\</span>
+| jq <span class="s1">'.Telemetry.state.afu'</span>
+
+<span class="c"># Output:</span>
+<span class="c"># {</span>
+<span class="c">#   "queue_duration": 4793,    # The duration of stored footage, in seconds</span>
+<span class="c">#   "queue_size": 2513406672,  # The size of stored footage, in bytes</span>
+<span class="c">#   "speed": 0,                # Uploading speed (if footage is being uploaded)</span>
+<span class="c">#   "state": False             # True if uploading enabled, False otherwise</span>
+<span class="c"># }</span>
+</code></pre>
+<p>Status of recorded, but not uploaded footage is reported in <code>state.afu</code> dictionary of device status.</p>
+<h1 id='getting-recordings'>Getting Recordings</h1><h2 id='getting-list-of-uploaded-chunks'>Getting List of Uploaded Chunks</h2><pre class="highlight shell tab-shell"><code>curl https://go.avstudio.com/front/api/v2/devices/DEVICEID/thumbnails?from<span class="o">=</span>START&amp;to<span class="o">=</span>END <span class="se">\</span>
+  -H <span class="s2">"Authorization: Bearer TOKEN"</span>
+
+<span class="c"># Output:</span>
+<span class="c"># [</span>
+<span class="c">#   {</span>
+<span class="c">#    "Start": 1546887235.983,</span>
+<span class="c">#    "End": 1546887246.35,</span>
+<span class="c">#    "Url": "chunks/DEVICEID/v2/video/000003000000.mp4"</span>
+<span class="c">#   },</span>
+<span class="c">#   {</span>
+<span class="c">#    "Start": 1546887246.383,</span>
+<span class="c">#    "End": 1546887256.749,</span>
+<span class="c">#    "Url": "chunks/DEVICEID/v2/video/000003000001.mp4"</span>
+<span class="c">#   },</span>
+<span class="c">#   {</span>
+<span class="c">#    "Start": 1546887256.783,</span>
+<span class="c">#    "End": 1546887267.016,</span>
+<span class="c">#    "Url": "chunks/DEVICEID/v2/video/000003000002.mp4"</span>
+<span class="c">#   }</span>
+<span class="c"># ]</span>
+</code></pre><pre class="highlight python tab-python"><code><span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get_timeline</span><span class="p">(</span><span class="n">DEVICEID</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+
+<span class="c"># Output:</span>
+<span class="c"># [</span>
+<span class="c">#   {</span>
+<span class="c">#    "Start": 1546887235.983,</span>
+<span class="c">#    "End": 1546887246.35,</span>
+<span class="c">#    "Url": "chunks/DEVICEID/v2/video/000003000000.mp4"</span>
+<span class="c">#   },</span>
+<span class="c">#   {</span>
+<span class="c">#    "Start": 1546887246.383,</span>
+<span class="c">#    "End": 1546887256.749,</span>
+<span class="c">#    "Url": "chunks/DEVICEID/v2/video/000003000001.mp4"</span>
+<span class="c">#   },</span>
+<span class="c">#   {</span>
+<span class="c">#    "Start": 1546887256.783,</span>
+<span class="c">#    "End": 1546887267.016,</span>
+<span class="c">#    "Url": "chunks/DEVICEID/v2/video/000003000002.mp4"</span>
+<span class="c">#   }</span>
+<span class="c"># ]</span>
+</code></pre>
+<p><code>GET /front/api/v2/devices/DEVICEID/thumbnails?from=START&amp;to=END</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>DEVICEID</td>
+<td>The ID of the device to retrieve</td>
+</tr>
+<tr>
+<td>START, STOP</td>
+<td>Time range (UNIX timestamps)</td>
+</tr>
+</tbody></table>
+<h2 id='downloading-chunks'>Downloading Chunks</h2><pre class="highlight shell tab-shell"><code>
+<span class="c"># Getting url of the first chunk from the range</span>
+<span class="nv">url</span><span class="o">=</span><span class="k">$(</span>curl -s <span class="s2">"https://go.avstudio.com/front/api/v2/devices/DEVICEID/thumbnails?from=START&amp;to=STOP"</span> <span class="se">\</span>
+ -H <span class="s2">"Authorization: Bearer TOKEN"</span> | jq -r .[0].Url<span class="k">)</span>
+
+<span class="c"># Downloading the chunk</span>
+curl -o <span class="s1">'/tmp/chunk.mp4'</span> <span class="s2">"https://go.avstudio.com/front/api/v2/media/</span><span class="nv">$url</span><span class="s2">"</span> <span class="se">\</span>
+ -H <span class="s2">"Authorization: Bearer TOKEN"</span>
+</code></pre><pre class="highlight python tab-python"><code>
+<span class="c"># Getting url of the first chunk from the range</span>
+<span class="n">url</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">Devices</span><span class="o">.</span><span class="n">get_timeline</span><span class="p">(</span><span class="n">DEVICEID</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">END</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="s">"Url"</span><span class="p">]</span>
+
+<span class="c"># Downloading the chunk</span>
+<span class="n">api</span><span class="o">.</span><span class="n">HTTP</span><span class="o">.</span><span class="n">http_download_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s">"/tmp/chunk.mp4"</span><span class="p">)</span>
+</code></pre>
+<p><code>GET /front/api/v2/media/URL</code></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>URL</td>
+<td>Chunk URL from list of chunks</td>
+</tr>
+</tbody></table>
 
       </div>
       <div class="dark-box">
