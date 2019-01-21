@@ -73,7 +73,7 @@ class Devices(object):
 
     def get_timeline(self, device_id, start, end):
         """
-        covers: GET /front/api/v1t/devices/{device}/timeline?from={start}&to={end}
+        covers: GET /front/api/v1t/devices/{device}/thumbnails?from={start}&to={end}
         """
         params = {
             "dev": device_id,
@@ -81,7 +81,7 @@ class Devices(object):
             "end": end
         }
 
-        return self._api_access.http_get("devices/%(dev)s/timeline?from=%(start)s&to=%(end)s" % params).json()
+        return self._api_access.http_get("devices/%(dev)s/thumbnails?from=%(start)s&to=%(end)s" % params).json()
 
     def get_waveform(self, device_id, start, end):
         """
