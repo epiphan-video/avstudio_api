@@ -227,6 +227,7 @@ Param|Possible values|Description
 -----|---------------|-----------
 resolution|1920x1080, 1280x720, 640x360, 320x180|Stream frame size
 bitrate|up to 4000|Stream bitrate, in Kbit/s
+chunk_duration|10-3600|Chunk duration, in seconds
 
 ## recording.start/stop
 
