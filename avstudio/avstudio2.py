@@ -34,7 +34,7 @@ class APIAccess2(object):
     def dump_request(self, r, request_time=None):
         request_dump = dump.dump_all(r)
         if request_time is not None:
-            request_dump = request_dump.decode('ascii')
+            request_dump = request_dump.decode('utf-8')
             request_dump += "\nRequest processed in {} seconds".format(request_time)
 
         if r.status_code in (200, 302):
@@ -133,7 +133,7 @@ class APIAccess2(object):
     def __init__(self, host):
         self._host = host
 
-    def setAuthToken(self, token):
+    def set_auth_token(self, token):
         self._headers = {
             "Authorization": "Bearer " + token
         }
@@ -148,9 +148,9 @@ class APIAccess2(object):
 
 
 class AVStudioAPI2(object):
-    def __init__(self, host="go.avstudio.com"):
+    def __init__(self, host="go.epiphan.cloud"):
         self.HTTP = APIAccess2(host)
         self.Devices = Devices(self.HTTP)
 
-    def setAuthToken(self, token):
-        self.HTTP.setAuthToken(token)
+    def set_auth_token(self, token):
+        self.HTTP.set_auth_token(token)

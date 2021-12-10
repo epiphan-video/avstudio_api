@@ -41,7 +41,7 @@ class APIAccess(object):
     def dump_request(self, r, request_time=None):
         request_dump = dump.dump_all(r)
         if request_time is not None:
-            request_dump = request_dump.decode('ascii')
+            request_dump = request_dump.decode('utf-8')
             request_dump += "\nRequest processed in {} seconds".format(request_time)
 
         if r.status_code in (200, 302):
@@ -152,9 +152,7 @@ class APIAccess(object):
         self.dump_request(r)
         r.raise_for_status()
 
-        # Temporary code for retrieving team id
-        loc = r.headers["Location"]
-        self._current_team = loc.split('/')[3].strip('#')
+        self._current_team = r.headers["x-current-team-id"]
 
         self._cookies = {"KSESSIONID": r.cookies["KSESSIONID"]}
         self.get_user_info()
@@ -196,8 +194,8 @@ class APIAccess(object):
 
 
 class AVStudioAPI(object):
-    def __init__(self, address):
-        self.HTTP = APIAccess(address)
+    def __init__(self, host="go.epiphan.cloud"):
+        self.HTTP = APIAccess(host)
         self._api_access = self.HTTP  # _api_access is obsolete
 
         self.Devices = Devices(self._api_access)
@@ -219,7 +217,3 @@ class AVStudioAPI(object):
     @property
     def current_team(self):
         return self._api_access.current_team
-
-    def delete_all(self):
-        for subsys in [self.Scenes, self.Devices, self.Assets]:
-            subsys.delete_all()
